@@ -11,7 +11,8 @@ like SSH access.
 ## Features
 
 - Extract firmware images (SquashFS rootfs)
-- Create custom firmware with modifications (SSH enabled)
+- Create custom firmware with modifications
+- Enable SSH: `root/snapmaker` and `lava/snapmaker`
 
 ## Pre-builts
 
