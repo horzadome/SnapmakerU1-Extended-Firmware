@@ -1,0 +1,3 @@
+iface eth0 inet auto
+	dhcp-up /sbin/dhcpcd
+	dhcp-down /sbin/dhcpcd -k
