@@ -13,7 +13,7 @@ TARGET_DIR="$ROOT_DIR/tmp/v4l2-mpp"
 
 if [[ ! -d "$TARGET_DIR" ]]; then
   git clone https://github.com/paxx12/v4l2-mpp.git "$TARGET_DIR" --recursive
-  git -C "$TARGET_DIR" checkout 9d3871b0eb09e2465c99b6117dd305ea42cfc121
+  git -C "$TARGET_DIR" checkout b28cf38c484e281e0b234a06aac2a7a9e524d710
 fi
 
 echo ">> Compiling MPP library..."
