@@ -1,5 +1,10 @@
 # Building from Source
 
+## Simplified Containerized Build (Recommended)
+The easiest way to build the firmware is using the provided build script.
+Refer to [development_simplified_build.md](development_simplified_build.md) for instructions.
+There's no need to read further if you use this method, come back here when you want to understand the build system in detail.
+
 ## Prerequisites
 
 - Linux build environment
@@ -13,7 +18,7 @@
 - `bc`
 - `libssl-dev`
 
-Prefer to run builds in a dockerized environment.
+Prefer to run builds in a containerized environment.
 
 ## Quick Start
 
@@ -64,7 +69,7 @@ The build system supports two profiles:
 
 ## Project Structure
 
-```
+```shell
 .
 ├── .github/                     Automated release builds
 ├── overlays/                    Profile overlay directories
