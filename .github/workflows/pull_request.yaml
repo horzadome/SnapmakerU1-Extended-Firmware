@@ -43,7 +43,7 @@ jobs:
         sudo apt-get update -y &&
         sudo apt-get install -y build-essential cmake \
           gcc-aarch64-linux-gnu pkg-config squashfs-tools git-core \
-          bc libssl-dev
+          bc libssl-dev dos2unix
 
     - name: Set GIT_VERSION
       shell: bash
@@ -75,7 +75,7 @@ jobs:
 
     - name: Comment PR with artifact links
       uses: actions/github-script@v7
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
       with:
         script: |
           const body = `✅ Build artifacts ready: [Download builds](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})`;

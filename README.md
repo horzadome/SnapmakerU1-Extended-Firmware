@@ -18,7 +18,7 @@ and the [release notes](https://github.com/paxx12/SnapmakerU1/releases/latest).
 ### Basic Firmware
 
 - [SSH Access](docs/ssh_access.md) - Remote shell access with `root/snapmaker` and `lava/snapmaker`
-- [USB Ethernet Adapters](docs/usb_ethernet.md) - Hot-plug support for USB ethernet devices
+- USB Ethernet Adapters - Hot-plug support with automatic DHCP configuration
 - [Data Persistence](docs/data_persistence.md) - Persistent storage across firmware updates
 - Enable fluidd automatically with camera feed.
 
@@ -29,6 +29,7 @@ All basic firmware features plus:
 - [Camera Support](docs/camera_support.md) - Hardware-accelerated camera stack (Rockchip MPP/VPU)
 - [USB Camera Support](docs/camera_support.md) - Support for external USB cameras
 - [Klipper and Moonraker Custom Includes](docs/klipper_includes.md) - Add custom configuration files via Fluidd
+- [RFID Filament Tag Support](docs/rfid_support.md) - NTAG213/215/216 support for OpenPrintTag and OpenSpool formats
 - Moonraker Apprise notifications - Send print notifications to Discord, Telegram, Slack, and 90+ services
 - WebRTC low-latency streaming
 - Fluidd v1.35.0 with timelapse plugin
@@ -42,9 +43,9 @@ Known issues:
 - [Installation Guide](docs/install.md) - How to install custom firmware
 - [Building from Source](docs/development.md) - Development guide for building custom firmware
 - [SSH Access](docs/ssh_access.md) - How to access the printer via SSH
-- [USB Ethernet](docs/usb_ethernet.md) - USB ethernet adapter configuration
 - [Camera Support](docs/camera_support.md) - Camera features and WebRTC streaming
 - [Klipper and Moonraker Custom Includes](docs/klipper_includes.md) - Add custom configuration files via Fluidd
+- [RFID Filament Tag Support](docs/rfid_support.md) - RFID filament tag usage and programming
 - [Data Persistence](docs/data_persistence.md) - Persistent storage configuration
 
 ## Dependent projects
