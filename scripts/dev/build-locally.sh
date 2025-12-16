@@ -8,10 +8,27 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$SCRIPT_DIR"
 
+# Get git branch name (sanitized for filename)
+BRANCH_NAME="$(git rev-parse --abbrev-ref HEAD 2>/dev/null | sed 's/[^a-zA-Z0-9._-]/_/g')"
+# Get short timestamp (YYYYMMDD-HHMM format for human readability)
+BUILD_TIMESTAMP="$(date +%Y%m%d-%H%M)"
+
 PROFILE="${1:-extended}"
-OUTPUT_FILE="${2:-U1_${PROFILE}_upgrade.bin}"
+# Default output file includes branch name and timestamp
+if [ -z "$2" ]; then
+    OUTPUT_FILE="U1_${PROFILE}_${BRANCH_NAME}_${BUILD_TIMESTAMP}.bin"
+else
+    OUTPUT_FILE="$2"
+fi
 BUILD_LOG="${SCRIPT_DIR}/build-$(date +%Y%m%d-%H%M%S).log"
 IMAGE_NAME="snapmaker-u1-builder:arm64"
+
+# Logging function with timestamps - writes to both stdout and log file
+log_with_timestamp() {
+    local msg
+    msg="[$(date '+%Y-%m-%d %H:%M:%S')] $*"
+    printf "%s\n" "$msg" | tee -a "$BUILD_LOG"
+}
 
 # Detect OS and architecture
 OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
@@ -21,12 +38,12 @@ ARCH="$(uname -m)"
 case "$ARCH" in
     aarch64|arm64) ARCH="arm64" ;;
     *) 
-        printf "Non-ARM64 architecture detected: %s\n" "$ARCH"
+        log_with_timestamp "Non-ARM64 architecture detected: $ARCH"
         ARCH="non-arm64"
         ;;
 esac
 
-printf "Detected OS: %s, Architecture: %s\n" "$OS" "$ARCH"
+log_with_timestamp "Detected OS: $OS, Architecture: $ARCH"
 
 # Detect available containerization tool
 CONTAINER_TOOL=""
@@ -34,7 +51,7 @@ NEEDS_EMULATION=false
 
 if [ "$ARCH" != "arm64" ]; then
     NEEDS_EMULATION=true
-    printf "Note: Running on non-ARM64 architecture, will need emulation/virtualization\n"
+    log_with_timestamp "Note: Running on non-ARM64 architecture, will need emulation/virtualization"
 fi
 
 # Function to check if a command exists
@@ -153,7 +170,8 @@ if [ -z "$CONTAINER_TOOL" ]; then
     show_unsupported
 fi
 
-printf "Using containerization tool: %s\n\nBuilding firmware...\nProfile: %s\nOutput: %s\nBuild log: %s\n" "$CONTAINER_TOOL" "$PROFILE" "$OUTPUT_FILE" "$BUILD_LOG"
+log_with_timestamp "Using containerization tool: $CONTAINER_TOOL"
+printf "\nBuilding firmware...\nProfile: %s\nOutput: %s\nBuild log: %s\n" "$PROFILE" "$OUTPUT_FILE" "$BUILD_LOG"
 
 # Build the builder container image if it doesn't exist
 image_exists() {
@@ -172,14 +190,16 @@ image_exists() {
 }
 
 if ! image_exists; then
-    printf "\n==> Building builder image (one-time setup)...\n==> This will take a few minutes but only happens once...\n"
+    printf "\n"
+    log_with_timestamp "Building builder image (one-time setup)..."
+    log_with_timestamp "This will take a few minutes but only happens once..."
     
     case "$CONTAINER_TOOL" in
         podman)
-            podman build --platform linux/arm64 -t "$IMAGE_NAME" -f "$SCRIPT_DIR/scripts/dev/Dockerfile.builder" "$SCRIPT_DIR"
+            podman build --platform linux/arm64 -t "$IMAGE_NAME" -f "$SCRIPT_DIR/scripts/dev/builder.Dockerfile" "$SCRIPT_DIR"
             ;;
         docker)
-            docker build --platform linux/arm64 -t "$IMAGE_NAME" -f "$SCRIPT_DIR/scripts/dev/Dockerfile.builder" "$SCRIPT_DIR"
+            docker build --platform linux/arm64 -t "$IMAGE_NAME" -f "$SCRIPT_DIR/scripts/dev/builder.Dockerfile" "$SCRIPT_DIR"
             ;;
         container)
             printf "ERROR: Apple's container tool is not yet fully supported in this script.\n"
@@ -187,58 +207,73 @@ if ! image_exists; then
             ;;
     esac
     
-    printf "==> Builder image ready!\n"
+    log_with_timestamp "Builder image ready!"
 fi
 
 printf "\n"
-printf "==> Starting build...\n"
+log_with_timestamp "Starting build..."
 
 # Ensure cache directories exist on host
 mkdir -p "$SCRIPT_DIR/firmware" "$SCRIPT_DIR/tmp"
 
-# Run the build in the pre-built ARM64 builder image
+# Run the build in the pre-built ARM64 builder image using native container logging
 run_container() {
+    local exit_code=0
+    
     case "$CONTAINER_TOOL" in
         podman)
-            podman run --rm -it \
+            # Use passthrough-tty for real-time unbuffered output when running on a TTY
+            podman run --rm \
+                --log-driver=passthrough-tty \
                 --platform linux/arm64 \
                 -v "$SCRIPT_DIR:/workspace:Z" \
                 -w /workspace \
                 "$IMAGE_NAME" \
-                bash -c "$1"
+                bash -c "$1" 2>&1 | tee -a "$BUILD_LOG" || exit_code=$?
             ;;
         docker)
-            docker run --rm -it \
+            # Docker's default json-file log driver provides good real-time output
+            docker run --rm \
                 --platform linux/arm64 \
                 -v "$SCRIPT_DIR:/workspace" \
                 -w /workspace \
                 "$IMAGE_NAME" \
-                bash -c "$1"
+                bash -c "$1" 2>&1 | tee -a "$BUILD_LOG" || exit_code=$?
             ;;
         container)
             printf "ERROR: Apple's container tool is not yet fully supported.\n"
             show_unsupported
             ;;
     esac
+    
+    return $exit_code
 }
 
+# Log build start
+log_with_timestamp "Starting container build for profile: $PROFILE"
+log_with_timestamp "Output file: $OUTPUT_FILE"
+
+# Run the build
 run_container "
     set -e
-    printf '==> Downloading firmware if needed...\n'
+    echo '[Container] Downloading firmware if needed...'
     make firmware || true
 
-    printf '==> Building firmware...\n'
+    echo '[Container] Building firmware...'
     make build PROFILE=$PROFILE OUTPUT_FILE=$OUTPUT_FILE
 
-    printf '==> Build complete!\n'
+    echo '[Container] Build complete!'
     ls -lh $OUTPUT_FILE
-" 2>&1 | tee "$BUILD_LOG"
+"
 
-BUILD_STATUS=${PIPESTATUS[0]}
+BUILD_STATUS=$?
 
 if [ "$BUILD_STATUS" -eq 0 ]; then
-    printf "\nBuild complete! Output file: %s\nBuild log saved to: %s\n" "$OUTPUT_FILE" "$BUILD_LOG"
+    printf "\n"
+    log_with_timestamp "Build complete! Output file: $OUTPUT_FILE"
+    log_with_timestamp "Build log saved to: $BUILD_LOG"
 else
-    printf "\nBuild failed! Check log: %s\n" "$BUILD_LOG"
+    printf "\n"
+    log_with_timestamp "Build failed! Check log: $BUILD_LOG"
     exit "$BUILD_STATUS"
 fi
