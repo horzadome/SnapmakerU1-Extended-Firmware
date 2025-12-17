@@ -40,3 +40,4 @@ if [[ ! -x "$1/usr/local/bin/curl" ]]; then
 fi
 
 echo ">> curl installed to $1/usr/local/bin"
+
