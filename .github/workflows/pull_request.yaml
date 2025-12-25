@@ -53,18 +53,34 @@ jobs:
     - name: Build with Extended Fluidd firmware
       run: ./dev.sh make build PROFILE=extended OUTPUT_FILE=U1_extended_${{ env.GIT_VERSION }}_upgrade.bin
 
+    - name: Build DEVEL version of Basic firmware
+      run: ./dev.sh make build PROFILE=basic-devel OUTPUT_FILE=U1_basic_${{ env.GIT_VERSION }}_devel.bin
+
+    - name: Build DEVEL version of Extended Fluidd firmware
+      run: ./dev.sh make build PROFILE=extended-devel OUTPUT_FILE=U1_extended_${{ env.GIT_VERSION }}_devel.bin
+
     - name: Clear Kernel Git Repo
       run: ./dev.sh git -C tmp/kernel/ clean -fdx
 
     - uses: actions/upload-artifact@v4
       with:
         name: basic-build
-        path: U1_basic_*.bin
+        path: U1_basic_*_upgrade.bin
 
     - uses: actions/upload-artifact@v4
       with:
         name: extended-build
-        path: U1_extended_*.bin
+        path: U1_extended_*_upgrade.bin
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: basic-devel-build
+        path: U1_basic_*_devel.bin
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: extended-devel-build
+        path: U1_extended_*_devel.bin
 
     - name: Comment PR with artifact links
       uses: actions/github-script@v7

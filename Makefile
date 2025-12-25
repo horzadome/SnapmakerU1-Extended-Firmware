@@ -6,19 +6,24 @@ all: tools
 
 OUTPUT_FILE := firmware/firmware.bin
 
-OVERLAYS += $(wildcard overlays/common/*/)
 ifneq (,$(PROFILE))
-OVERLAYS += $(wildcard overlays/firmware-$(PROFILE)/*/)
+PROFILE_MAIN := $(patsubst %-devel,%,$(PROFILE))
+OVERLAYS += $(wildcard overlays/common/*/)
+OVERLAYS += $(wildcard overlays/firmware-$(PROFILE_MAIN)/*/)
+ifneq ($(filter %-devel,$(PROFILE)),)
+OVERLAYS += $(wildcard overlays/devel/*/)
+endif
 endif
 
 PROFILES := $(patsubst overlays/firmware-%,%,$(wildcard overlays/firmware-*))
+PROFILES += $(patsubst overlays/firmware-%,%-devel,$(wildcard overlays/firmware-*))
 
 $(OUTPUT_FILE): firmware/$(FIRMWARE_FILE) tools
 ifeq (,$(PROFILE))
 	@echo "Please specify a profile using 'make PROFILE=<profile_name>'. Available profiles are: $(PROFILES)."
 	@exit 1
-else ifeq (,$(filter $(PROFILE),$(PROFILES)))
-	@echo "Invalid profile '$(PROFILE)'. Available profiles are: $(PROFILES)."
+else ifeq (,$(filter $(PROFILE_MAIN),$(PROFILES)))
+	@echo "Invalid profile '$(PROFILE_MAIN)'. Available profiles are: $(PROFILES)."
 	@exit 1
 endif
 	./scripts/create_firmware.sh $< tmp/firmware $@ $(OVERLAYS)

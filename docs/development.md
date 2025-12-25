@@ -87,11 +87,16 @@ The build system supports two profiles:
 
 Overlays are organized into categories based on their scope and build profile. Each overlay is numbered to indicate its application order within its category.
 
+## Build Options
+
+- `basic-devel` or `extended-devel` - Add development overlays from `overlays/devel/` to the selected profile
+  - e.g. `./dev.sh make build PROFILE=extended DEVEL=1`
+
 ### Directory Structure
 
-```
-overlays/
+```text
 ├── common/                          Core overlays applied to all profiles
+├── devel/                           Devel overlays applied to all profiles when `-devel`
 └── firmware-${profile}/             Profile-specific firmware overlays
 ```
 
@@ -113,11 +118,12 @@ Overlays are applied in the following order:
 
 ## Project Structure
 
-```
+```text
 .
 ├── .github/                     Automated release builds
 ├── overlays/                    Profile overlay directories
 │   ├── common/                  Core overlays for all profiles
+│   ├── devel/                   Devel overlays for all profiles
 │   └── firmware-${profile}/     Profile-specific firmware overlays
 ├── firmware/                    Downloaded and generated firmware files
 ├── scripts/                     Build and modification scripts

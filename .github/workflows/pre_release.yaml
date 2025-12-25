@@ -59,7 +59,7 @@ jobs:
         updateOnlyUnreleased: true
         prerelease: true
         bodyFile: RELEASE.md
-        artifacts: "U1_*.bin"
+        artifacts: "U1_*_upgrade.bin"
 
     - name: Save Firmwares Cache
       if: steps.cache-firmwares.outputs.cache-hit != 'true'
