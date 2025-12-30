@@ -1,0 +1,10 @@
+{
+  "ServiceName": "octoapp",
+  "VirtualEnvPath": "/usr",
+  "RepoRootFolder": "/home/lava/octoapp",
+  "LocalFileStoragePath": "/home/lava/printer_data/octoapp",
+  "ConfigFolder": "/home/lava/printer_data/config",
+  "LogFolder": "/home/lava/printer_data/logs",
+  "IsCompanion": false,
+  "MoonrakerConfigFile": "/home/lava/printer_data/config/moonraker.conf"
+}

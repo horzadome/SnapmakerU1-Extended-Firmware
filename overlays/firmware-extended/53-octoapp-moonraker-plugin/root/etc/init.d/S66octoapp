@@ -1,0 +1,59 @@
+#!/bin/sh
+#
+# Starts OctoApp Companion Plugin service.
+# This service connects to Moonraker and improves OctoApp mobile app compatibility with Moonraker/Klipper.
+
+EXTENDED_CFG="/home/lava/printer_data/config/extended/extended.cfg"
+OCTOAPP_ENABLED=$(/usr/local/bin/extended-config.py "$EXTENDED_CFG" octoapp enabled false)
+
+PID_FILE=/var/run/octoapp.pid
+RUN_SCRIPT=/usr/local/bin/octoapp.sh
+
+start() {
+	if [ "$OCTOAPP_ENABLED" != "true" ]; then
+		echo "OctoApp Plugin is disabled in extended.cfg, not starting."
+		return
+	fi
+
+	printf "Starting OctoApp Plugin: "
+	if [ -f "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
+		echo "already running"
+		return 1
+	fi
+	HOME=/home/lava start-stop-daemon -S -q -b -m -p $PID_FILE -c lava --exec $RUN_SCRIPT
+	echo "OK"
+}
+
+stop() {
+	printf "Stopping OctoApp Plugin: "
+	if [ -f "$PID_FILE" ]; then
+		start-stop-daemon -K -p $PID_FILE -s TERM
+		rm -f "$PID_FILE"
+		echo "OK"
+	else
+		echo "not running"
+	fi
+}
+
+restart() {
+	stop
+	sleep 1
+	start
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart|reload)
+	restart
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?
