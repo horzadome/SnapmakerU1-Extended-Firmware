@@ -2,8 +2,12 @@
 
 ROOT_DIR="$(realpath "$(dirname "$0")/../../../..")"
 
-GIT_URL=https://github.com/paxx12/v4l2-mpp.git
-GIT_SHA=2a4d519ba51cefb72e51829504565003b3be3e98
+# GIT_URL=https://github.com/paxx12/v4l2-mpp.git
+# GIT_SHA=2a4d519ba51cefb72e51829504565003b3be3e98
+
+GIT_URL=https://github.com/justinh-rahb/v4l2-mpp.git
+GIT_SHA=86a630da6ed25bc30af51a7367376a06e313f646
+
 
 if [[ $# -ne 1 ]]; then
   echo "Usage: $0 <rootfs-dir>"
@@ -44,5 +48,10 @@ file "$1/usr/local/bin/stream-rtsp"
 file "$1/usr/local/bin/stream-webrtc"
 file "$1/usr/local/bin/stream-snap-mqtt.py"
 file "$1/usr/local/bin/stream-http.py"
+file "$1/usr/local/bin/v4l2-ctrls.py"
+
+echo ">> Installing requirements for camera webui"
+"$ROOT_DIR/scripts/helpers/chroot_firmware.sh" "$1" /usr/bin/pip3 install flask
+
 
 echo ">> v4l2-mpp installation completed successfully."
