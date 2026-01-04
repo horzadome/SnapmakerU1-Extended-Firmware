@@ -20,12 +20,12 @@ CMD_CAPTURE="/usr/local/bin/capture-v4l2-raw-mpp --device /dev/video11 --format 
 
 CMD_WEBRTC="/usr/local/bin/stream-webrtc --h264-sock /tmp/capture-mipi-h264.sock --webrtc-sock /tmp/capture-mipi-webrtc.sock"
 
-CMD_HTTP="/usr/bin/python3 /usr/local/bin/stream-http.py --jpeg-sock /tmp/capture-mipi-jpeg.sock --mjpeg-sock /tmp/capture-mipi-mjpeg.sock --h264-sock /tmp/capture-mipi-h264.sock --webrtc-sock /tmp/capture-mipi-webrtc.sock --bind 127.0.0.1"
+CMD_HTTP="/usr/bin/python3 /usr/local/bin/stream-http.py --jpeg-sock /tmp/capture-mipi-jpeg.sock --mjpeg-sock /tmp/capture-mipi-mjpeg.sock --h264-sock /tmp/capture-mipi-h264.sock --webrtc-sock /tmp/capture-mipi-webrtc.sock --bind 127.0.0.1 --control-sock /tmp/v4l2-control-mipi.sock"
 
 CMD_SNAP_MQTT="/usr/bin/python3 /usr/local/bin/stream-snap-mqtt.py --jpeg-sock /tmp/capture-mipi-jpeg.sock --publish-dir /home/lava/printer_data/camera"
 
 CMD_CTRLS="/usr/bin/python3 /usr/local/bin/v4l2-ctrls.py"
-CMD_CTRLS_ARGS=" --device /dev/v4l-subdev2 --port 5001"
+CMD_CTRLS_ARGS=" --device /dev/v4l-subdev2 --socket /tmp/v4l2-control-mipi.sock --app-base-url /webcam/control --camera-url / --stream-prefix=/dev/v4l2-subdev2=/"
 
 start() {
     if [ ! -e /dev/video11 ]; then

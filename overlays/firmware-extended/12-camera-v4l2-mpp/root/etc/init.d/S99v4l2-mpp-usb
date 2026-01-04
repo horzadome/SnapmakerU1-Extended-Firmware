@@ -16,10 +16,10 @@ CMD_CAPTURE="/usr/local/bin/capture-v4l2-jpeg-mpp --device /dev/video18 --jpeg-s
 
 CMD_WEBRTC="/usr/local/bin/stream-webrtc --h264-sock /tmp/capture-usb-h264.sock --webrtc-sock /tmp/capture-usb-webrtc.sock"
 
-CMD_HTTP="/usr/bin/python3 /usr/local/bin/stream-http.py --jpeg-sock /tmp/capture-usb-jpeg.sock --mjpeg-sock /tmp/capture-usb-mjpeg.sock --h264-sock /tmp/capture-usb-h264.sock --webrtc-sock /tmp/capture-usb-webrtc.sock --bind 127.0.0.1 --port 8081"
+CMD_HTTP="/usr/bin/python3 /usr/local/bin/stream-http.py --jpeg-sock /tmp/capture-usb-jpeg.sock --mjpeg-sock /tmp/capture-usb-mjpeg.sock --h264-sock /tmp/capture-usb-h264.sock --webrtc-sock /tmp/capture-usb-webrtc.sock --bind 127.0.0.1 --port 8081 --control-sock /tmp/v4l2-control-usb.sock"
 
 CMD_CTRLS="/usr/bin/python3 /usr/local/bin/v4l2-ctrls.py"
-CMD_CTRLS_ARGS=" --device /dev/video18 --stream-prefix /dev/video18=/webcam2/ --port 5002"
+CMD_CTRLS_ARGS=" --device /dev/video18 --socket /tmp/v4l2-control-usb.sock --app-base-url /webcam2/control --camera-url ../ --stream-prefix=/dev/video18=/"
 
 start() {
     if [ ! -e /dev/video18 ]; then
