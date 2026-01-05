@@ -10,4 +10,4 @@
 +
  log()
  {
- 	logger -p user.info -t "camera[$$]" -- "$1"
+ 	logger -p user.info -t "unisrv[$$]" -- "$1"
