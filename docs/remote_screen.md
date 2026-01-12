@@ -68,14 +68,6 @@ enabled: true
 
 Save and reboot the printer.
 
-## Security
-
-- Reuses Fluidd/Mainsail authentication which is none by default
-- Remote screen is disabled by default in [extended.cfg](../10-default-config/root/home/lava/default-config/extended/extended.cfg) because by default there is no authentication
-- User has to explicitly enable it in `extended.cfg` and in `04_remote_screen.cfg`
-- Requires authentication only if Fluidd/Mainsail also require authentication (Moonraker config)
-- The `GUI` iframe only works in Fluidd. Mainsail does not expose the `iframe`
-
 ## Browser/Device Compatibility
 
 The remote screen uses normal HTML and works with all modern browsers.
