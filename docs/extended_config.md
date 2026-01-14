@@ -1,5 +1,8 @@
 ---
-title: Extended Configuration
+title: Extended Config
+nav_order: 22
+nav_icon: fas fa-cog
+nav_section: Extended Features
 ---
 
 # Extended Configuration

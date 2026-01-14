@@ -1,5 +1,8 @@
 ---
-title: Klipper and Moonraker Custom Includes
+title: Klipper Includes
+nav_order: 21
+nav_icon: fas fa-file-code
+nav_section: Extended Features
 ---
 
 # Klipper and Moonraker Custom Includes

@@ -1,5 +1,7 @@
 ---
-title: Custom Snapmaker U1 Firmware
+title: Home
+nav_order: 1
+nav_icon: fas fa-home
 ---
 
 # Custom Snapmaker U1 Firmware

@@ -1,5 +1,8 @@
 ---
-title: Installation Guide
+title: Installation
+nav_order: 2
+nav_icon: fas fa-download
+nav_section: Getting Started
 ---
 
 # Installation Guide

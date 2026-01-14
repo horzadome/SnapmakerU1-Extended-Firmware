@@ -1,5 +1,8 @@
 ---
 title: Monitoring
+nav_order: 24
+nav_icon: fas fa-chart-line
+nav_section: Extended Features
 ---
 
 # Monitoring

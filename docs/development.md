@@ -1,5 +1,8 @@
 ---
-title: Building from Source
+title: Development
+nav_order: 3
+nav_icon: fas fa-wrench
+nav_section: Getting Started
 ---
 
 # Building from Source

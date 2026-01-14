@@ -1,5 +1,8 @@
 ---
 title: Data Persistence
+nav_order: 11
+nav_icon: fas fa-database
+nav_section: Basic Features
 ---
 
 # Data Persistence

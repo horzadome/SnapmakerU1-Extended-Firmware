@@ -1,5 +1,8 @@
 ---
 title: SSH Access
+nav_order: 10
+nav_icon: fas fa-terminal
+nav_section: Basic Features
 ---
 
 # SSH Access

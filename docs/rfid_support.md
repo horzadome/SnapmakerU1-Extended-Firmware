@@ -1,5 +1,8 @@
 ---
-title: RFID Filament Tag Support
+title: RFID Support
+nav_order: 23
+nav_icon: fas fa-tag
+nav_section: Extended Features
 ---
 
 # RFID Filament Tag Support

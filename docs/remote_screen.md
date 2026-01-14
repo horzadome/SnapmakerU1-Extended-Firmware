@@ -1,5 +1,8 @@
 ---
-title: Remote Screen Access
+title: Remote Screen
+nav_order: 25
+nav_icon: fas fa-desktop
+nav_section: Extended Features
 ---
 
 # Remote Screen Access

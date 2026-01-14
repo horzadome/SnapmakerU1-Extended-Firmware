@@ -1,5 +1,8 @@
 ---
 title: Camera Support
+nav_order: 20
+nav_icon: fas fa-camera
+nav_section: Extended Features
 ---
 
 # Camera Support
